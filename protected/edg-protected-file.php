@@ -7,8 +7,10 @@ require_once $_SERVER[ 'DOCUMENT_ROOT' ] . 'wp-load.php';
 $qv_file = $_GET[ 'file' ];
 if( ! isset( $qv_file ) ) exit;
 
+parse_str( parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_QUERY ) ?? '', $query_string );
+
 # Die eigentliche Validierung, ob eine gültige Anfrage vorliegt. Hier können beliebige WP-Funktionen wie "is_user_logged_in()", "current_user_can()" uvm. verwendet werden.
-if( ! is_user_logged_in() ) {
+if( ! is_user_logged_in() || array_key_exists( 'file', $query_string )) {
 	# Falls wir nicht eingeloggt sind, leite auf die Homepage weiter. Falls man den Nutzer zur Login-URL mit einem "redirect_to"-Parameter weiterleiten möchte, kann "auth_redirect()" (anstatt von "wp_safe_redirect()" oder "wp_redirect()") verwendet werden. Dies sorgt dafür, dass, nachdem man sich auf der weitergeleiteten Login-URL erfolgreich angemeldet, auf die gewünschte, am Anfang angeforderte Datei-URL, weitergeleitet wird.
 	wp_safe_redirect( home_url() );
 	exit;
